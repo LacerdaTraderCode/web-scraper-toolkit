@@ -1,40 +1,35 @@
-"""
-Exportadores de dados para múltiplos formatos usando Polars.
-"""
+import logging
 from pathlib import Path
-from typing import List, Dict
+
 import polars as pl
 
+logger = logging.getLogger(__name__)
 
-def export_to_csv(data: List[Dict], filepath: str) -> None:
-    """Exporta lista de dicts para CSV usando Polars (mais rápido que Pandas)."""
-    df = pl.DataFrame(data)
+
+def _to_frame(data: list[dict], filepath: str) -> pl.DataFrame:
     Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-    df.write_csv(filepath)
-    print(f"✅ CSV salvo: {filepath} ({len(df)} linhas)")
+    return pl.DataFrame(data)
 
 
-def export_to_json(data: List[Dict], filepath: str) -> None:
-    """Exporta lista de dicts para JSON."""
-    df = pl.DataFrame(data)
-    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-    df.write_json(filepath)
-    print(f"✅ JSON salvo: {filepath} ({len(df)} linhas)")
+def export_to_csv(data: list[dict], filepath: str) -> None:
+    frame = _to_frame(data, filepath)
+    frame.write_csv(filepath)
+    logger.info("CSV saved: %s (%d rows)", filepath, len(frame))
 
 
-def export_to_parquet(data: List[Dict], filepath: str) -> None:
-    """
-    Exporta para Parquet - formato colunar eficiente.
-    Ideal para grandes volumes de dados e análises posteriores.
-    """
-    df = pl.DataFrame(data)
-    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-    df.write_parquet(filepath, compression="snappy")
-    print(f"✅ Parquet salvo: {filepath} ({len(df)} linhas, compressão snappy)")
+def export_to_json(data: list[dict], filepath: str) -> None:
+    frame = _to_frame(data, filepath)
+    frame.write_json(filepath)
+    logger.info("JSON saved: %s (%d rows)", filepath, len(frame))
 
 
-def export_all(data: List[Dict], base_path: str) -> None:
-    """Exporta nos 3 formatos de uma vez."""
+def export_to_parquet(data: list[dict], filepath: str) -> None:
+    frame = _to_frame(data, filepath)
+    frame.write_parquet(filepath, compression="snappy")
+    logger.info("Parquet saved: %s (%d rows)", filepath, len(frame))
+
+
+def export_all(data: list[dict], base_path: str) -> None:
     export_to_csv(data, f"{base_path}.csv")
     export_to_json(data, f"{base_path}.json")
     export_to_parquet(data, f"{base_path}.parquet")
