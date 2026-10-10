@@ -117,6 +117,18 @@ Collects headlines asynchronously (faster than Selenium).
 
 ---
 
+## 🧪 Development
+
+```bash
+pip install -r requirements-dev.txt
+ruff check . && ruff format --check .
+pytest -v
+```
+
+Browser drivers and HTTP sessions are mocked, so the test suite needs no browser or network access. The same checks run on every push and pull request via GitHub Actions.
+
+---
+
 ## ⚖️ Ethical Use
 
 This toolkit is for educational purposes. When scraping:
