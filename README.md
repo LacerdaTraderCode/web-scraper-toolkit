@@ -101,7 +101,7 @@ Navigates the `books.toscrape.com` catalog simulating a real user.
 
 ### Playwright — asynchronous scraping
 ```bash
-python examples/news_playwright.py
+python -m examples.news_playwright
 ```
 Collects headlines asynchronously (faster than Selenium).
 
