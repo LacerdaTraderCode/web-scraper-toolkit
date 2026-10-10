@@ -1,18 +1,11 @@
-"""
-Exemplo: scraping de livros usando Selenium.
-Executar: python examples/books_selenium.py
-"""
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
+import logging
 
 from scrapers.selenium_scraper import SeleniumScraper
 from utils.exporters import export_all
 
 
 def main():
-    print("🚀 Iniciando scraping com Selenium...\n")
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
     scraper = SeleniumScraper(headless=True)
     try:
@@ -20,8 +13,6 @@ def main():
         export_all(books, "output/books_selenium")
     finally:
         scraper.close()
-
-    print("\n✅ Concluído!")
 
 
 if __name__ == "__main__":
