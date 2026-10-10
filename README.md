@@ -89,7 +89,7 @@ playwright install chromium
 
 ### BeautifulSoup — static HTML
 ```bash
-python examples/quotes_bs4.py
+python -m examples.quotes_bs4
 ```
 Extracts quotes from `quotes.toscrape.com`, saves to CSV and Parquet.
 
