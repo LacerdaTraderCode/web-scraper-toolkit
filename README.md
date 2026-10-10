@@ -4,6 +4,7 @@
 
 **A complete web scraping kit with BeautifulSoup, Selenium, and Playwright**
 
+[![CI](https://github.com/LacerdaTraderCode/web-scraper-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/LacerdaTraderCode/web-scraper-toolkit/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Selenium](https://img.shields.io/badge/Selenium-43B02A?logo=selenium&logoColor=white)](https://www.selenium.dev/)
 [![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
@@ -57,7 +58,10 @@ web-scraper-toolkit/
 │   ├── quotes_bs4.py         # Scraping quotes.toscrape.com
 │   ├── books_selenium.py     # Scraping books.toscrape.com
 │   └── news_playwright.py    # News scraping (async)
+├── tests/
+├── .github/workflows/ci.yml
 ├── requirements.txt
+├── requirements-dev.txt
 └── README.md
 ```
 
@@ -85,19 +89,19 @@ playwright install chromium
 
 ### BeautifulSoup — static HTML
 ```bash
-python examples/quotes_bs4.py
+python -m examples.quotes_bs4
 ```
 Extracts quotes from `quotes.toscrape.com`, saves to CSV and Parquet.
 
 ### Selenium — JavaScript-heavy sites
 ```bash
-python examples/books_selenium.py
+python -m examples.books_selenium
 ```
 Navigates the `books.toscrape.com` catalog simulating a real user.
 
 ### Playwright — asynchronous scraping
 ```bash
-python examples/news_playwright.py
+python -m examples.news_playwright
 ```
 Collects headlines asynchronously (faster than Selenium).
 
@@ -110,6 +114,18 @@ Collects headlines asynchronously (faster than Selenium).
 | BeautifulSoup | ~15s | Low | Simple sites |
 | Selenium | ~90s | High | Legacy JS-heavy sites |
 | Playwright (async) | ~25s | Medium | Modern projects |
+
+---
+
+## 🧪 Development
+
+```bash
+pip install -r requirements-dev.txt
+ruff check . && ruff format --check .
+pytest -v
+```
+
+Browser drivers and HTTP sessions are mocked, so the test suite needs no browser or network access. The same checks run on every push and pull request via GitHub Actions.
 
 ---
 

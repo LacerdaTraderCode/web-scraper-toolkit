@@ -1,19 +1,11 @@
-"""
-Exemplo: scraping de quotes usando BeautifulSoup.
-Executar: python examples/quotes_bs4.py
-"""
-import sys
-from pathlib import Path
-
-# Adiciona raiz do projeto ao path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+import logging
 
 from scrapers.bs4_scraper import BeautifulSoupScraper
 from utils.exporters import export_all
 
 
 def main():
-    print("🚀 Iniciando scraping com BeautifulSoup...\n")
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
     scraper = BeautifulSoupScraper(min_interval=1.0)
     try:
@@ -21,8 +13,6 @@ def main():
         export_all(quotes, "output/quotes_bs4")
     finally:
         scraper.close()
-
-    print("\n✅ Concluído!")
 
 
 if __name__ == "__main__":

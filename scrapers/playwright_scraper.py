@@ -1,65 +1,54 @@
-"""
-Scraper assíncrono usando Playwright - moderno e rápido.
-"""
 import asyncio
-from typing import List, Dict
-from playwright.async_api import async_playwright
+import logging
+
+from playwright.async_api import Error, async_playwright
+
+logger = logging.getLogger(__name__)
+
+EXTRACT_QUOTES_SCRIPT = """
+() => {
+    const items = document.querySelectorAll('.quote');
+    return Array.from(items).map(q => ({
+        text: q.querySelector('.text')?.innerText || '',
+        author: q.querySelector('.author')?.innerText || '',
+        tags: Array.from(q.querySelectorAll('.tag')).map(t => t.innerText).join(', ')
+    }));
+}
+"""
 
 
 class PlaywrightScraper:
-    """Scraper moderno, assíncrono e multi-browser."""
-
     async def scrape_quotes_async(
         self, base_url: str = "https://quotes.toscrape.com", max_pages: int = 5
-    ) -> List[Dict]:
-        """
-        Scraping assíncrono - várias páginas em paralelo.
-        Muito mais rápido que Selenium.
-        """
+    ) -> list[dict]:
         quotes = []
 
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
-            context = await browser.new_context()
+        async with async_playwright() as playwright:
+            browser = await playwright.chromium.launch(headless=True)
+            try:
+                context = await browser.new_context()
+                tasks = [
+                    self._scrape_page(context, f"{base_url}/page/{page_number}/")
+                    for page_number in range(1, max_pages + 1)
+                ]
+                results = await asyncio.gather(*tasks, return_exceptions=True)
+            finally:
+                await browser.close()
 
-            # Criar tasks em paralelo
-            tasks = []
-            for page_num in range(1, max_pages + 1):
-                tasks.append(
-                    self._scrape_page(context, f"{base_url}/page/{page_num}/")
-                )
+        for result in results:
+            if isinstance(result, list):
+                quotes.extend(result)
 
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-
-            for result in results:
-                if isinstance(result, list):
-                    quotes.extend(result)
-
-            await browser.close()
-
-        print(f"✅ Total coletado: {len(quotes)} quotes (async)")
+        logger.info("Collected %d quotes (async)", len(quotes))
         return quotes
 
-    async def _scrape_page(self, context, url: str) -> List[Dict]:
-        """Extrai quotes de uma única página."""
+    async def _scrape_page(self, context, url: str) -> list[dict]:
         page = await context.new_page()
         try:
             await page.goto(url, wait_until="domcontentloaded", timeout=15000)
-
-            quotes = await page.evaluate("""
-                () => {
-                    const items = document.querySelectorAll('.quote');
-                    return Array.from(items).map(q => ({
-                        text: q.querySelector('.text')?.innerText || '',
-                        author: q.querySelector('.author')?.innerText || '',
-                        tags: Array.from(q.querySelectorAll('.tag'))
-                            .map(t => t.innerText).join(', ')
-                    }));
-                }
-            """)
-            return quotes
-        except Exception as e:
-            print(f"⚠️ Erro em {url}: {e}")
+            return await page.evaluate(EXTRACT_QUOTES_SCRIPT)
+        except Error as exc:
+            logger.warning("Failed to scrape %s: %s", url, exc)
             return []
         finally:
             await page.close()
