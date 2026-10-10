@@ -4,6 +4,7 @@
 
 **A complete web scraping kit with BeautifulSoup, Selenium, and Playwright**
 
+[![CI](https://github.com/LacerdaTraderCode/web-scraper-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/LacerdaTraderCode/web-scraper-toolkit/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Selenium](https://img.shields.io/badge/Selenium-43B02A?logo=selenium&logoColor=white)](https://www.selenium.dev/)
 [![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
