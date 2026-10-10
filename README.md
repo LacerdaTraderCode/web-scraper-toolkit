@@ -58,7 +58,10 @@ web-scraper-toolkit/
 │   ├── quotes_bs4.py         # Scraping quotes.toscrape.com
 │   ├── books_selenium.py     # Scraping books.toscrape.com
 │   └── news_playwright.py    # News scraping (async)
+├── tests/
+├── .github/workflows/ci.yml
 ├── requirements.txt
+├── requirements-dev.txt
 └── README.md
 ```
 
