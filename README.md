@@ -95,7 +95,7 @@ Extracts quotes from `quotes.toscrape.com`, saves to CSV and Parquet.
 
 ### Selenium — JavaScript-heavy sites
 ```bash
-python examples/books_selenium.py
+python -m examples.books_selenium
 ```
 Navigates the `books.toscrape.com` catalog simulating a real user.
 
