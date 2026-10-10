@@ -32,7 +32,9 @@ def scraper(driver):
 
 
 def test_parse_book_extracts_fields():
-    book = SeleniumScraper._parse_book(make_article("Dune", "£9.99", " In stock ", "star-rating Five"))
+    article = make_article("Dune", "£9.99", " In stock ", "star-rating Five")
+
+    book = SeleniumScraper._parse_book(article)
 
     assert book == {"title": "Dune", "price": "£9.99", "stock": "In stock", "rating": "Five"}
 
